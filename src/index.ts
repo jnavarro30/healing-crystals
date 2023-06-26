@@ -1,66 +1,114 @@
-import express from 'express'
-import axios from 'axios'
-import cheerio from 'cheerio'
-import { table } from 'console'
-const app = express()
+import express from "express";
+import axios from "axios";
+import cheerio from "cheerio";
+import { table } from "console";
+const app = express();
 
-const PORT = 8000
+const PORT = 8000;
 
 const website = {
-    page: 'https://www.healingcrystals.com/natural-crystals-and-minerals-by-stone.html',
-    base: 'https://www.healingcrystals.com/'
-}
+  page: "https://www.healingcrystals.com/natural-crystals-and-minerals-by-stone.html",
+  crystal: "Specimen_-_Black_Agate_Rough_Natural_Specimens__India_.html",
+  base: "https://www.healingcrystals.com/",
+  single:
+    "https://www.healingcrystals.com/Specimen_-_Black_Agate_Rough_Natural_Specimens__India_.html",
+};
 
-interface Crystal {
-    name: string,
-    summary: string,
-}
+// interface Crystal {
+//     crystalName: String,
+//     summary: String,
+//     affirmation: String,
+//     astrologicalSign: String,
+//     primaryChakra: String,
+//     color: String,
+//     shape: String,
+//     category: String,
+//     location: String,
+//     rarity: String,
+//     mineralClass: String,
+//     crystalSystem: String,
+//     hardness: String,
+//     numericalVibration: String,
+//     chemicalComposition: String,
+//     physical: String,
+//     emotional: String,
+//     spiritual: String,
+// }
 
-const result: object[] = []
+const crystalInfo = {}
 
+axios
+  .get(website.single)
+  .then((response) => {
+    const html = response.data;
+    const $ = cheerio.load(html);
 
-axios.get(website.page)
-    .then(response => {
-        const html = response.data
-        const $ = cheerio.load(html)
+    $("tr", html).each(function () {
+      const tdText = $(this).find("td").text();
+      const arr = [
+        "Crystal Name:",
+        "Summary:",
+        "Affirmation:",
+        "Astrological Sign:",
+        "Primary Chakra:",
+        "Color:",
+        "Shape:",
+        "Category:",
+        "Location:",
+        "Rarity:",
+        "Mineral Class:",
+        "Crystal System:",
+        "Hardness:",
+        "Numerical Vibration:",
+        "Chemical Composition:",
+        "Physical:",
+        "Emotional:",
+        "Spiritual:",
+      ];
 
-        $('div.pageHeading1', html).each(function() {
-            const nestedHtml = $(this).find('a').attr('href')
+      arr.forEach(item => {
+        let regex = RegExp(`${item}`)
+        if(regex.test(tdText)) {
+            let value = tdText.split(":")[1]
+            crystalInfo[item] = value
+        }
+      })
+      //  console.log(typeof tdText)
+      // result.push({
+      //     // tdText,
+      //     name
+      // })
+      // axios.get(`${nestedHtml}`)
+      //     .then(nestedResponse => {
+      //         const html2 = nestedResponse.data
+      //         const $2 = cheerio.load(html2)
 
-            axios.get(`${nestedHtml}`)
-                .then(nestedResponse => {
-                    const html2 = nestedResponse.data
-                    const $2 = cheerio.load(html2)
+      //         $2('td', html2).each(function() {
+      //             const name = $2(this).eq(0).text()
 
-                    $2('td', html2).each(function() {
-                        const name = $2(this).eq(0).text()
+      //             result.push({
+      //                 name
+      //             })
+      //         })
+      //     })
+    });
 
-                        result.push({
-                            name
-                        })
-                    })
-                })
+    // $('img.img-responsive', html).each(function() {
+    //     const image = $(this).attr('src')
+    //     result.push({
+    //         ...result,
+    //         image
+    //     })
+    // })
 
-                // first do research for 1 item then nest the items
-            
-        })
+    // console.log(html, 'yo')
+  })
+  .catch((err) => console.log(err));
 
-        // $('img.img-responsive', html).each(function() {
-        //     const image = $(this).attr('src')
-        //     result.push({
-        //         ...result,
-        //         image
-        //     })
-        // })
-
-
-        // console.log(html, 'yo')
-    }).catch(err => console.log(err))
-
-app.get('/', (req, res) => {
-    res.json(result)
-})
+app.get("/", (req, res) => {
+  res.json(crystalInfo);
+});
 
 app.listen(PORT, () => {
-    console.log(`Server is running on PORT: ${PORT}`)
-})
+  console.log(`Server is running on PORT: ${PORT}`);
+});
