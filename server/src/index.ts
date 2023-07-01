@@ -1,5 +1,5 @@
 import express from "express";
-import CrystalsRouter from './router.js';
+import CrystalsRouter from './routes/router.js';
 const app = express();
 const PORT = 8000;
 
