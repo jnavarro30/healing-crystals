@@ -8,11 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import puppeteer from "puppeteer";
-import fs from 'fs';
-import crystalPages from '../data/data.js';
-import crystalProperties from '../data/properties.js';
-// export const crystalPages: any = [];
-// const crystalInfo: any = {};
+import fs from "fs";
+import crystalPages from "../data/data.js";
+import crystalProperties from "../data/properties.js";
 const allCrystalInfo = [];
 const fetchHTMLPage = (html) => __awaiter(void 0, void 0, void 0, function* () {
     const browser = yield puppeteer.launch();
@@ -41,8 +39,6 @@ const fetchHTMLPages = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 const formatLinks = (links) => __awaiter(void 0, void 0, void 0, function* () {
     const formatted = [];
-    // const browser = await puppeteer.launch();
-    // const page = await browser.newPage();
     for (let link of links) {
         const newLink = yield fetchHTMLPage(link);
         formatted.push(newLink);
@@ -50,14 +46,14 @@ const formatLinks = (links) => __awaiter(void 0, void 0, void 0, function* () {
     return formatted;
 });
 const crystalInfo = {};
-const createCrystalObject = () => __awaiter(void 0, void 0, void 0, function* () {
-    const crystalPage = crystalPages[0];
+const createCrystalObject = (crystalPage) => __awaiter(void 0, void 0, void 0, function* () {
+    // const crystalPage = crystalPages[0];
     const browser = yield puppeteer.launch();
     const page = yield browser.newPage();
     yield page.goto(crystalPage);
     const allTdElementText = yield page.evaluate(() => {
-        const tdElements = document.querySelectorAll('.tab-content tbody tr td');
-        const tdElementText = [...tdElements].map(tdElement => {
+        const tdElements = document.querySelectorAll(".tab-content tbody tr td");
+        const tdElementText = [...tdElements].map((tdElement) => {
             return tdElement.innerText;
         });
         return tdElementText;
@@ -68,16 +64,22 @@ const createCrystalObject = () => __awaiter(void 0, void 0, void 0, function* ()
         if (crystalProperties.includes(word))
             crystalInfo[word] = nextWord;
     }
-    allCrystalInfo.push(crystalInfo);
-    browser.close();
+    yield browser.close();
+    return yield crystalInfo;
 });
-createCrystalObject();
+export const createCrystalObjectArray = () => __awaiter(void 0, void 0, void 0, function* () {
+    for (let page of crystalPages) {
+        const info = yield createCrystalObject(page);
+        yield allCrystalInfo.push(info);
+    }
+    return allCrystalInfo;
+});
 const createJson = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const pages = [];
     for (let da of data) {
         let result = yield fetchHTMLPage(da);
         yield pages.push(result);
     }
-    fs.writeFile('cp.json', JSON.stringify(pages), err => console.log(err));
+    fs.writeFile("cp.json", JSON.stringify(pages), (err) => console.log(err));
 });
 //# sourceMappingURL=helpers.js.map

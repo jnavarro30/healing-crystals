@@ -1,14 +1,10 @@
-import data from '../data/data.js';
-import crystalProperties from '../data/properties.js';
-import '../utils/helpers.js';
+import data from "../data/data.js";
+import service from "./service.js";
 
-
-// CRUD
-// import { crystalPages, crystalInfo, allCrystalInfo } from '../utils/helpers.js'
-
-const list = (req: any, res: any) => {
-    res.json({ data: data })
-}
+const list = async (req: any, res: any) => {
+  const result = await service.fetchHTML(data);
+  res.json({ data: result });
+};
 
 // const listInfo = (req: any, res: any) => {
 //     res.json({ data: allCrystalInfo});
@@ -19,10 +15,10 @@ const list = (req: any, res: any) => {
 // }
 
 export const controller = {
-    list,
-    // read,
-    // listInfo
-}
+  list,
+  // read,
+  // listInfo
+};
 
 // list array of objects of each crystal
-// read specific crsytal 
+// read specific crsytal
