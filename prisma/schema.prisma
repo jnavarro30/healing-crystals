@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Crystal {
+    id          Int    @id @default(autoincrement())
+    name        String
+    summary     String
+    affirmation String
+    sign        String
+    chakra      String
+    color       String
+    shape       String
+    category    String
+    location    String
+    rarity      String
+    class       String
+    system      String
+    hardness    String
+    vibration   String
+    composition String
+    physical    String
+    emotional   String
+    spiritual   String
+}
