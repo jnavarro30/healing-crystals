@@ -1,27 +1,13 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import CrystalsRouter from "./routes/router.js";
 const app = express();
 const prisma = new PrismaClient();
 const PORT = 8081;
 app.use(express.json());
-app.use(CrystalsRouter);
-app.get("/crystals", async (_, res) => {
+app.get("/all", async (_, res) => {
     try {
-        const allCrystals = await prisma.crystal.findMany();
-        res.status(200).json(allCrystals);
-    }
-    catch (error) {
-        res.status(400).json({ message: error });
-    }
-    finally {
-        await prisma.$disconnect();
-    }
-});
-app.post("/crystals", async (req, res) => {
-    try {
-        const newCrystal = await prisma.crystal.create({ data: req.body });
-        res.status(200).json(newCrystal);
+        const all = await prisma.crystal.findMany();
+        res.status(200).json(all);
     }
     catch (error) {
         res.status(400).json({ message: error });

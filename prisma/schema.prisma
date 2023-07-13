@@ -18,16 +18,17 @@ model Crystal {
     sign        String
     chakra      String
     color       String
-    shape       String
-    category    String
-    location    String
-    rarity      String
-    class       String
-    system      String
-    hardness    String
-    vibration   String
-    composition String
-    physical    String
-    emotional   String
-    spiritual   String
+    shape       String?
+    category    String?
+    location    String?
+    rarity      String?
+    class       String?
+    system      String?
+    hardness    String?
+    vibration   String?
+    composition String?
+    physical    String?
+    emotional   String?
+    spiritual   String?
+    image       String
 }
